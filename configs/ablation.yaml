@@ -1,0 +1,41 @@
+# Ablation study configuration - baseline without feature synthesis
+
+# Random seed for reproducibility
+random_state: 42
+
+# Dataset configuration
+data:
+  dataset_name: "synthetic_classification"
+  test_size: 0.2
+  val_size: 0.1
+
+# Model hyperparameters (baseline - no feature synthesis)
+model:
+  n_estimators: 100
+  learning_rate: 0.05
+  max_depth: 6
+  num_leaves: 31
+  min_child_samples: 20
+  subsample: 0.8
+  colsample_bytree: 0.8
+  reg_alpha: 0.1
+  reg_lambda: 0.1
+
+  # Disable novel components for baseline
+  max_interaction_degree: 2
+  max_features_per_round: 10
+  uncertainty_temperature: 1.0
+  enable_feature_synthesis: false
+  synthesis_interval: 5
+
+# Training configuration
+training:
+  patience: 20
+  min_delta: 0.0001
+  checkpoint_dir: "checkpoints"
+
+# Paths
+paths:
+  models_dir: "models"
+  results_dir: "results"
+  checkpoints_dir: "checkpoints"

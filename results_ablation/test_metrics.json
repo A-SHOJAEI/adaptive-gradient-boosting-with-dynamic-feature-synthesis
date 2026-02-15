@@ -1,0 +1,10 @@
+{
+  "test_auc": 0.9019999999999999,
+  "test_accuracy": 0.8475,
+  "test_f1": 0.8463476070528967,
+  "training_time": 1.2429897785186768,
+  "n_train_samples": 1400,
+  "n_val_samples": 200,
+  "n_test_samples": 400,
+  "config_file": "configs/ablation.yaml"
+}
