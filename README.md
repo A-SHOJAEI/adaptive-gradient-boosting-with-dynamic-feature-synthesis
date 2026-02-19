@@ -139,16 +139,57 @@ The project includes configurations for ablation studies:
 
 ## Results
 
-Performance on synthetic binary classification (1,400 train / 200 val / 400 test samples, seed=42):
+### Training Details
+
+Trained on a synthetic binary classification dataset (2,000 samples: 1,400 train / 200 val / 400 test, 20 features, seed=42) using LightGBM as the base learner. Early stopping with patience of 20 rounds selected iteration 84 out of 100 as the best checkpoint.
+
+**LightGBM AUC progression (every 10 rounds):**
+
+| Round | Train AUC | Validation AUC |
+|-------|-----------|----------------|
+| 10    | 0.9670    | 0.9006         |
+| 20    | 0.9847    | 0.9257         |
+| 30    | 0.9907    | 0.9322         |
+| 40    | 0.9933    | 0.9390         |
+| 50    | 0.9952    | 0.9439         |
+| 60    | 0.9970    | 0.9502         |
+| 70    | 0.9978    | 0.9565         |
+| **84 (best)** | **0.9988** | **0.9570** |
+| 100   | 0.9995    | 0.9550         |
+
+### Test Set Performance
 
 | Metric | Baseline (No Synthesis) | Full Model (Dynamic Synthesis) |
 |--------|------------------------|-------------------------------|
-| AUC-ROC | 0.902 | 0.902 |
+| AUC-ROC | 0.9020 | 0.9020 |
+| AUC-PR | -- | 0.8674 |
 | Accuracy | 84.75% | 84.75% |
-| F1 Score | 0.846 | 0.846 |
-| Training Time | 1.25s | 1.24s |
+| Precision | -- | 85.28% |
+| Recall | -- | 84.00% |
+| F1 Score | 0.8463 | 0.8463 |
+| Training Time | 1.25s | 170.07s |
 
-On this synthetic dataset, both configurations achieve equivalent performance, indicating the baseline features are already sufficient for the generated data distribution. The dynamic feature synthesis mechanism is designed to provide gains on more complex, real-world tabular datasets where feature interactions are non-trivial and vary across the prediction space.
+**Confusion matrix (full model, 400 test samples):**
+
+|              | Predicted 0 | Predicted 1 |
+|--------------|-------------|-------------|
+| **Actual 0** | 171         | 29          |
+| **Actual 1** | 32          | 168         |
+
+### Analysis
+
+On this synthetic dataset, both configurations achieve identical test metrics (AUC 0.9020, F1 0.8463). This is expected: the synthetic data generator produces features that are already well-suited for gradient boosting without additional interaction terms. The dynamic feature synthesis adds significant overhead (170s vs 1.25s) due to the meta-learning controller evaluating residual patterns and generating polynomial interactions at each synthesis interval, but does not improve accuracy here because the base features are sufficient for this data distribution.
+
+The framework is designed for real-world tabular datasets where useful feature interactions are non-trivial and vary across the prediction space -- scenarios where manual feature engineering typically provides substantial gains. The meta-learning controller and uncertainty-weighted loss are most beneficial when the model encounters heterogeneous regions that require different feature representations.
+
+### Saved Artifacts
+
+- `models/final_model.pkl` -- trained LightGBM model
+- `models/preprocessor.pkl` -- fitted data preprocessor
+- `checkpoints/best_model.pkl` -- best checkpoint (iteration 84)
+- `results/evaluation_results.json` -- full evaluation metrics and classification report
+- `results/roc_curve.png` -- ROC curve plot
+- `results/feature_importance.png` -- feature importance plot
 
 ## Testing
 
