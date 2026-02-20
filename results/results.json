@@ -1,0 +1,11 @@
+{
+  "accuracy": 0.8475,
+  "precision": 0.8527918781725888,
+  "recall": 0.84,
+  "f1": 0.8463476070528967,
+  "auc_roc": 0.9019999999999999,
+  "auc_pr": 0.8674440729601083,
+  "confusion_matrix": [[171, 29], [32, 168]],
+  "dataset": "synthetic_classification",
+  "n_samples": 400
+}
